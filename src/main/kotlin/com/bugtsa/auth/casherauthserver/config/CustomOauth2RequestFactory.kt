@@ -18,16 +18,19 @@ class CustomOauth2RequestFactory(clientDetailsService: ClientDetailsService) : D
     @Autowired
     private lateinit var userDetailsService: UserDetailsService
 
-
-    override fun createTokenRequest(requestParameters: kotlin.collections.Map<String, String>,
+    override fun createTokenRequest(requestParameters: Map<String, String>,
                                     authenticatedClient: ClientDetails): TokenRequest {
-        if (requestParameters["grant_type"] == "refresh_token") {
-            val authentication = tokenStore!!.readAuthenticationForRefreshToken(
-                    tokenStore!!.readRefreshToken(requestParameters["refresh_token"]))
-            SecurityContextHolder.getContext()
-                    .setAuthentication(UsernamePasswordAuthenticationToken(authentication.getName(), null,
-                            userDetailsService!!.loadUserByUsername(authentication.getName()).getAuthorities()))
+        if (requestParameters[GRANT_TYPE] == REFRESH_TOKEN) {
+            val authentication = tokenStore.readAuthenticationForRefreshToken(
+                    tokenStore.readRefreshToken(requestParameters[REFRESH_TOKEN]))
+            SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(authentication.name, null,
+                    userDetailsService.loadUserByUsername(authentication.name).authorities)
         }
         return super.createTokenRequest(requestParameters, authenticatedClient)
+    }
+
+    companion object {
+        private const val GRANT_TYPE = "grant_type"
+        private const val REFRESH_TOKEN = "refresh_token"
     }
 }
