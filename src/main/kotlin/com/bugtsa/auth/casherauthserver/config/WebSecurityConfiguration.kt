@@ -1,9 +1,12 @@
 package com.bugtsa.auth.casherauthserver.config
 
+import com.bugtsa.auth.casherauthserver.service.MyAuthenticationEntryPoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -11,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 
-import javax.servlet.http.HttpServletResponse
 
 @Configuration
 class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
@@ -32,15 +34,33 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.csrf().disable().exceptionHandling()
-                .authenticationEntryPoint(
-                        { request, response, authException -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED) })
+        http
+                .csrf().disable()
+                .exceptionHandling()
+//                .accessDeniedHandler({ request, response, authException ->
+//                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+//                })
+                .authenticationEntryPoint(MyAuthenticationEntryPoint())
+//                .exceptionHandling()
+//                .authenticationEntryPoint(
+//                        { request, response, authException -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED) })
                 .and().authorizeRequests().antMatchers("/**").authenticated().and().httpBasic()
     }
 
     @Throws(Exception::class)
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder())
+        auth
+                .authenticationProvider(daoAuthenticationProvider())
+//                .userDetailsService(userDetailsService)
+//                .passwordEncoder(passwordEncoder())
     }
 
+    @Bean
+    fun daoAuthenticationProvider(): AuthenticationProvider {
+        val impl = DaoAuthenticationProvider()
+        impl.setUserDetailsService(userDetailsService)
+        impl.setPasswordEncoder(passwordEncoder())
+        impl.isHideUserNotFoundExceptions = false
+        return impl
+    }
 }
