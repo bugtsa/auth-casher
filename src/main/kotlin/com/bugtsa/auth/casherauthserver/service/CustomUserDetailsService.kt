@@ -29,22 +29,10 @@ class CustomUserDetailsService : UserDetailsService {
             user
         } catch (e: EmptyResultDataAccessException) {
             val arrayObject = arrayOf<Any>(input)
-            throw UsernameNotFoundException(SpringSecurityMessageSource.getAccessor().getMessage("AbstractUserDetailsAuthenticationProvider.UserUnknown", arrayObject, "User $input is not known"))
+            throw UsernameNotFoundException(SpringSecurityMessageSource
+                    .getAccessor()
+                    .getMessage("AbstractUserDetailsAuthenticationProvider.UserUnknown", arrayObject, "User $input is not known"))
         }
-    }
-
-    class WrongCredentialCustomException(private val userName: String,
-                                         private val localMessage: String,
-                                         private val throwable: Throwable) : UsernameNotFoundException(localMessage, throwable) {
-        override val message: String?
-            get() = "Bad credential for $userName"
-
-        override fun getLocalizedMessage(): String {
-            return localMessage
-        }
-
-        override val cause: Throwable?
-            get() = throwable
     }
 
     private fun isValidEmail(email: String?): Boolean {

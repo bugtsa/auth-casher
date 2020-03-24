@@ -1,6 +1,5 @@
 package com.bugtsa.auth.casherauthserver.config
 
-import com.bugtsa.auth.casherauthserver.service.MyAuthenticationEntryPoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
+import javax.servlet.http.HttpServletResponse
 
 
 @Configuration
@@ -37,22 +37,14 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
         http
                 .csrf().disable()
                 .exceptionHandling()
-//                .accessDeniedHandler({ request, response, authException ->
-//                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
-//                })
-                .authenticationEntryPoint(MyAuthenticationEntryPoint())
-//                .exceptionHandling()
-//                .authenticationEntryPoint(
-//                        { request, response, authException -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED) })
+                .authenticationEntryPoint(
+                        { request, response, authException -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED) })
                 .and().authorizeRequests().antMatchers("/**").authenticated().and().httpBasic()
     }
 
     @Throws(Exception::class)
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth
-                .authenticationProvider(daoAuthenticationProvider())
-//                .userDetailsService(userDetailsService)
-//                .passwordEncoder(passwordEncoder())
+        auth.authenticationProvider(daoAuthenticationProvider())
     }
 
     @Bean
