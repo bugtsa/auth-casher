@@ -40,7 +40,7 @@ class OAuth2Configuration : AuthorizationServerConfigurerAdapter() {
     private lateinit var userDetailsService: UserDetailsService
 
     @Autowired
-    private lateinit var clientDetailsService: ClientDetailsService
+    private lateinit var clientDetailsService: MyClientDetailsService
 
     @Autowired
     @Qualifier("authenticationManagerBean")

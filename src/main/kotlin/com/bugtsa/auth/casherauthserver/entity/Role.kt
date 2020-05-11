@@ -1,6 +1,5 @@
 package com.bugtsa.auth.casherauthserver.entity;
 
-import com.bugtsa.auth.casherauthserver.auth.entity.BaseIdEntity
 import javax.persistence.*
 
 @Entity
@@ -10,6 +9,6 @@ class Role : BaseIdEntity() {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "permission_role", joinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")], inverseJoinColumns = [JoinColumn(name = "permission_id", referencedColumnName = "id")])
-    var permissions: kotlin.collections.List<Permission>? = null
+    var permissions: List<Permission>? = null
 
 }

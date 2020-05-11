@@ -1,6 +1,5 @@
 package com.bugtsa.auth.casherauthserver.entity
 
-import com.bugtsa.auth.casherauthserver.auth.entity.BaseIdEntity
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -25,7 +24,7 @@ class User : BaseIdEntity(), UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_user", joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")], inverseJoinColumns = [JoinColumn(name = "role_id", referencedColumnName = "id")])
-    private val roles: kotlin.collections.List<Role>? = null
+    private val roles: List<Role>? = null
 
     override fun isEnabled(): Boolean {
         return enabled

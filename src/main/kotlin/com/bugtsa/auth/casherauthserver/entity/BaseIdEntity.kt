@@ -1,4 +1,4 @@
-package com.bugtsa.auth.casherauthserver.auth.entity;
+package com.bugtsa.auth.casherauthserver.entity
 
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
