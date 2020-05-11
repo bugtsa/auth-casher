@@ -17,4 +17,4 @@ spring:
 check-user-scopes: true
 
 server:
-  port: 9090
+  port: 9092
